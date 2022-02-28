@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Racelens Serverless
+
+Parameters:
+  RekognitionCollectionName:
+    Type: String
+    Default: 'racelens_dev'
+
+Globals:
+  Function:
+    Timeout: 3
+    Runtime: python3.9
+    Architectures:
+      - x86_64
+    CodeUri: lambda/
+  Api:
+    EndpointConfiguration: REGIONAL
+    Cors: "'*'"
+    BinaryMediaTypes: [ '*~1*' ]
+
+Resources:
+  RekognitionCollection:
+    Type: AWS::Rekognition::Collection
+    Properties:
+      CollectionId: !Ref RekognitionCollectionName

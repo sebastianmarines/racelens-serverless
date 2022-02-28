@@ -1,0 +1,3 @@
+{
+    "cfnLint.path": "poetry run cfn-lint"
+}

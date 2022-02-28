@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "racelens"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1vlyq9mnt10h1"
+s3_prefix = "racelens"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "RekognitionCollectionName=\"racelens_dev\""
+image_repositories = []
+confirm_changeset = true
