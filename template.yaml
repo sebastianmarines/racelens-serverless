@@ -6,7 +6,10 @@ Description: >
 Parameters:
   RekognitionCollectionName:
     Type: String
-    Default: 'racelens_dev'
+    Default: racelens-dev
+  BucketName:
+    Type: String
+    Default: racelens-images-dev
 
 Globals:
   Function:
@@ -25,3 +28,22 @@ Resources:
     Type: AWS::Rekognition::Collection
     Properties:
       CollectionId: !Ref RekognitionCollectionName
+  
+  ImagesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+  ImagesBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ImagesBucket
+      PolicyDocument:
+        Id: PublicReadPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Sub arn:aws:s3:::${ImagesBucket}/*
+  
