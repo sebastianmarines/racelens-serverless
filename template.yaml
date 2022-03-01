@@ -4,6 +4,9 @@ Description: >
   Racelens Serverless
 
 Parameters:
+  Stage:
+    Type: String
+    Default: dev
   RekognitionCollectionName:
     Type: String
     Default: racelens_dev
@@ -13,6 +16,11 @@ Parameters:
   DynamoDBTableName:
     Type: String
     Default: racelens_dev
+  DomainName:
+    Type: String
+    Default: racelens.ml
+  HostedZoneId:
+    Type: String
 
 Globals:
   Function:
@@ -25,12 +33,20 @@ Globals:
       Variables:
         COLLECTION_NAME: !Ref RekognitionCollectionName
         DYNAMODB_TABLE_NAME: !Ref DynamoDBTableName
-  Api:
-    EndpointConfiguration: REGIONAL
-    Cors: "'*'"
-    BinaryMediaTypes: ["*~1*"]
 
 Resources:
+  RestApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Stage
+      Cors: "'*'"
+      BinaryMediaTypes: ["*~1*"]
+      Domain:
+        DomainName: !Sub "api-dev.${DomainName}"
+        CertificateArn: !Ref DomainCertificate
+        Route53:
+          HostedZoneId: !Ref HostedZoneId
+
   IndexFaces:
     Type: AWS::Serverless::Function
     Properties:
@@ -59,6 +75,7 @@ Resources:
         Find:
           Type: Api
           Properties:
+            RestApiId: !Ref RestApiGateway
             Path: /find
             Method: post
 
@@ -106,7 +123,11 @@ Resources:
         - Key: key
           Value: value
 
-Outputs:
-  ProdDataEndpoint:
-    Description: "API Prod stage endpoint"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  DomainCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Sub "*.${DomainName}"
+      DomainValidationOptions:
+        - DomainName: !Sub "*.${DomainName}"
+          HostedZoneId: !Ref HostedZoneId
+      ValidationMethod: DNS
