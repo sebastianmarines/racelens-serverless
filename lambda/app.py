@@ -4,6 +4,8 @@ import urllib.parse
 
 import boto3
 
+from models import Event
+
 COLLECTION_NAME = os.environ['COLLECTION_NAME']
 
 s3 = boto3.client('s3')
@@ -24,14 +26,18 @@ def index_faces(event, _context):
             },
         )
         if result['FaceRecords']:
+            image = Event(
+                f"imageId#{result['FaceRecords'][0]['Face']['FaceId']}",
+                key
+            )
+            image.save()
             return {
-                'statusCode': 200,
-                'body': json.dumps(result['FaceRecords'][0]['Face']['FaceId'])
+                'statusCode': "OK",
             }
 
         return {
-            'statusCode': 418,
-            'body': json.dumps('No faces found')
+            'statusCode': "ERROR",
+            'body': "No faces found"
         }
     except Exception as e:
         print(e)
