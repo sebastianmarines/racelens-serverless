@@ -28,7 +28,7 @@ def index_faces(event, _context):
         )
         if result['FaceRecords']:
             image = Event(
-                f"imageId#{result['FaceRecords'][0]['Face']['FaceId']}",
+                f"imageId#{result['FaceRecords'][0]['Face']['ImageId']}",
                 key
             )
             image.save()
