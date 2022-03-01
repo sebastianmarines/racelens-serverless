@@ -46,6 +46,21 @@ Resources:
           Properties:
             Bucket: !Ref ImagesBucket
             Events: s3:ObjectCreated:*
+  FindFaces:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.find_faces
+      MemorySize: 512 # TODO: Check if it works with 128
+      Policies:
+        - AmazonS3FullAccess
+        - AmazonRekognitionFullAccess
+        - AmazonDynamoDBFullAccess
+      Events:
+        Find:
+          Type: Api
+          Properties:
+            Path: /find
+            Method: post
 
   RekognitionCollection:
     Type: AWS::Rekognition::Collection
@@ -90,3 +105,8 @@ Resources:
       Tags:
         - Key: key
           Value: value
+
+Outputs:
+  ProdDataEndpoint:
+    Description: "API Prod stage endpoint"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

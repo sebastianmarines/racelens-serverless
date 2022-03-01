@@ -1,3 +1,4 @@
+import base64
 import json
 import os
 import urllib.parse
@@ -44,3 +45,22 @@ def index_faces(event, _context):
         print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
         raise e
               
+def find_faces(event, _context):
+    try:
+        rk_result = rekognition.search_faces_by_image(
+            CollectionId=COLLECTION_NAME,
+            Image={
+                "Bytes": base64.b64decode(event['body'])
+            }
+        )
+    except rekognition.exceptions.InvalidParameterException as e:
+        return {
+            'statusCode': 400,
+            'body': json.dumps('Invalid image')
+        }
+
+    print(rk_result)
+    return {
+        'statusCode': 200,
+        'body': json.dumps([face['Face']['ImageId'] for face in rk_result['FaceMatches']])
+    }
