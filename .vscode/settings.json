@@ -1,3 +1,4 @@
 {
-    "cfnLint.path": "poetry run cfn-lint"
+    "cfnLint.path": "poetry run cfn-lint",
+    "python.formatting.provider": "yapf"
 }
