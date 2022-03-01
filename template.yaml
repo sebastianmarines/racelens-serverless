@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
   Racelens Serverless
@@ -6,7 +6,7 @@ Description: >
 Parameters:
   RekognitionCollectionName:
     Type: String
-    Default: racelens-dev
+    Default: racelens_dev
   BucketName:
     Type: String
     Default: racelens-images-dev
@@ -18,17 +18,35 @@ Globals:
     Architectures:
       - x86_64
     CodeUri: lambda/
+    Environment:
+      Variables:
+        COLLECTION_NAME: !Ref RekognitionCollectionName
   Api:
     EndpointConfiguration: REGIONAL
     Cors: "'*'"
-    BinaryMediaTypes: [ '*~1*' ]
+    BinaryMediaTypes: ["*~1*"]
 
 Resources:
+  IndexFaces:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.index_faces
+      MemorySize: 128
+      Policies:
+        - AmazonS3FullAccess
+        - AmazonRekognitionFullAccess
+      Events:
+        IndexFacesEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref ImagesBucket
+            Events: s3:ObjectCreated:*
+
   RekognitionCollection:
     Type: AWS::Rekognition::Collection
     Properties:
       CollectionId: !Ref RekognitionCollectionName
-  
+
   ImagesBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -43,7 +61,6 @@ Resources:
         Statement:
           - Sid: PublicReadForGetBucketObjects
             Effect: Allow
-            Principal: '*'
-            Action: 's3:GetObject'
+            Principal: "*"
+            Action: "s3:GetObject"
             Resource: !Sub arn:aws:s3:::${ImagesBucket}/*
-  
