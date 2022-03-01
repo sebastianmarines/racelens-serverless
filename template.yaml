@@ -10,6 +10,9 @@ Parameters:
   BucketName:
     Type: String
     Default: racelens-images-dev
+  DynamoDBTableName:
+    Type: String
+    Default: racelens_dev
 
 Globals:
   Function:
@@ -21,6 +24,7 @@ Globals:
     Environment:
       Variables:
         COLLECTION_NAME: !Ref RekognitionCollectionName
+        DYNAMODB_TABLE_NAME: !Ref DynamoDBTableName
   Api:
     EndpointConfiguration: REGIONAL
     Cors: "'*'"
@@ -35,6 +39,7 @@ Resources:
       Policies:
         - AmazonS3FullAccess
         - AmazonRekognitionFullAccess
+        - AmazonDynamoDBFullAccess
       Events:
         IndexFacesEvent:
           Type: S3
@@ -64,3 +69,24 @@ Resources:
             Principal: "*"
             Action: "s3:GetObject"
             Resource: !Sub arn:aws:s3:::${ImagesBucket}/*
+
+  DynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      TableName: !Ref DynamoDBTableName
+      Tags:
+        - Key: key
+          Value: value
