@@ -46,6 +46,8 @@ def index_faces(event, _context):
         raise e
               
 def find_faces(event, _context):
+    event_name = event['pathParameters']['event_name']
+
     try:
         rk_result = rekognition.search_faces_by_image(
             CollectionId=COLLECTION_NAME,
@@ -58,9 +60,19 @@ def find_faces(event, _context):
             'statusCode': 400,
             'body': json.dumps('Invalid image')
         }
+    
+    matches = [face['Face']['ImageId'] for face in rk_result['FaceMatches']]
+
+    if not matches:
+        return {
+            'statusCode': 404,
+            'body': json.dumps('No matches found')
+        }
+    
+    images = [image.sk for image_id in matches for image in Event.query(f"imageId#{image_id}", Event.sk.startswith(f"{event_name}/"))]
 
     print(rk_result)
     return {
         'statusCode': 200,
-        'body': json.dumps([face['Face']['ImageId'] for face in rk_result['FaceMatches']])
+        'body': json.dumps(images)
     }

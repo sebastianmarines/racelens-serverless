@@ -71,12 +71,13 @@ Resources:
         - AmazonS3FullAccess
         - AmazonRekognitionFullAccess
         - AmazonDynamoDBFullAccess
+      Timeout: 5
       Events:
         Find:
           Type: Api
           Properties:
             RestApiId: !Ref RestApiGateway
-            Path: /find
+            Path: /{event_name}/find
             Method: post
 
   RekognitionCollection:
