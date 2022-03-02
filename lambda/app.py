@@ -46,6 +46,8 @@ def index_faces(event, _context):
         raise e
               
 def find_faces(event, _context):
+    # TODO: #2 Query all images at the same time
+
     event_name = event['pathParameters']['event_name']
 
     try:

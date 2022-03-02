@@ -102,6 +102,43 @@ Resources:
             Principal: "*"
             Action: "s3:GetObject"
             Resource: !Sub arn:aws:s3:::${ImagesBucket}/*
+  ImagesDistribution:
+    # TODO: #1 Create Route53 alias
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Aliases:
+          - !Sub "images-dev.${DomainName}"
+        PriceClass: PriceClass_100
+        DefaultCacheBehavior:
+          TargetOriginId: "S3Origin"
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods:
+            - HEAD
+            - GET
+            - OPTIONS
+          DefaultTTL: 86400
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+        ViewerCertificate:
+          AcmCertificateArn: !Ref DomainCertificate
+          SslSupportMethod: sni-only
+        Origins:
+          - DomainName: !Sub "${BucketName}.s3.amazonaws.com"
+            Id: "S3Origin"
+            S3OriginConfig:
+              OriginAccessIdentity: !Join
+                - ""
+                - - "origin-access-identity/cloudfront/"
+                  - !Ref ImagesOAI
+  ImagesOAI:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: Racelens images
 
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
