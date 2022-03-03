@@ -66,7 +66,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: app.find_faces
-      MemorySize: 512 # TODO: Check if it works with 128
+      MemorySize: 512 # TODO: #3 Check if it works with 128
       Policies:
         - AmazonS3FullAccess
         - AmazonRekognitionFullAccess
@@ -103,7 +103,6 @@ Resources:
             Action: "s3:GetObject"
             Resource: !Sub arn:aws:s3:::${ImagesBucket}/*
   ImagesDistribution:
-    # TODO: #1 Create Route53 alias
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
@@ -139,6 +138,16 @@ Resources:
     Properties:
       CloudFrontOriginAccessIdentityConfig:
         Comment: Racelens images
+  ImagesDistributionRecord:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      RecordSets:
+        - Name: !Sub "images-dev.${DomainName}"
+          Type: A
+          AliasTarget:
+            DNSName: !GetAtt ImagesDistribution.DomainName
+            HostedZoneId: !Sub "Z2FDTNDATAQYW2"
 
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
