@@ -61,7 +61,7 @@ dev = ["coverage (==5.3)", "pytest-cov (==2.10.1)", "pylint (>=2.6.0,<2.7.0)", "
 
 [[package]]
 name = "aws-sam-cli"
-version = "1.40.0"
+version = "1.40.1"
 description = "AWS SAM CLI is a CLI tool for local development and testing of Serverless applications"
 category = "dev"
 optional = false
@@ -1276,8 +1276,8 @@ aws-lambda-builders = [
     {file = "aws_lambda_builders-1.13.0.tar.gz", hash = "sha256:d622550c93d2678b76af34f72c8059e5f5841489ea0ea9da2d57ba9af6be87a9"},
 ]
 aws-sam-cli = [
-    {file = "aws-sam-cli-1.40.0.tar.gz", hash = "sha256:e7f190740ff49179f105f6c73c04e5bfd23493e6e71ec61871a47b293d9b85a3"},
-    {file = "aws_sam_cli-1.40.0-py3-none-any.whl", hash = "sha256:2eb46943c9e8dd19ea5a110e19fb61b030223a47a11069f64ad33590241c27fb"},
+    {file = "aws-sam-cli-1.40.1.tar.gz", hash = "sha256:ff422aecb49e10658be7f4cfc743be5cba7fb8330ea6a3c0526d1c172f75b76d"},
+    {file = "aws_sam_cli-1.40.1-py3-none-any.whl", hash = "sha256:76cb71935522ed6c0035b2fcefd047d94b4a6ce1dcf8a3e5547083b5cbdbef13"},
 ]
 aws-sam-translator = [
     {file = "aws-sam-translator-1.42.0.tar.gz", hash = "sha256:8a7976c0ee2fca004a590e17d3551a49c8d8ba14ed0cb3674ea270d41d0dcd5b"},
