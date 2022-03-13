@@ -94,12 +94,13 @@ Resources:
     Properties:
       Bucket: !Ref ImagesBucket
       PolicyDocument:
-        Id: PublicReadPolicy
+        Id: OAIReadPolicy
         Version: 2012-10-17
         Statement:
-          - Sid: PublicReadForGetBucketObjects
+          - Sid: OAIReadForGetBucketObjects
             Effect: Allow
-            Principal: "*"
+            Principal:
+              CanonicalUser: !GetAtt ImagesOAI.S3CanonicalUserId
             Action: "s3:GetObject"
             Resource: !Sub arn:aws:s3:::${ImagesBucket}/*
   ImagesDistribution:
