@@ -218,7 +218,6 @@ Resources:
         - profile
       SupportedIdentityProviders:
         - COGNITO
-        - Google
 
   UserPoolDomain:
     Type: AWS::Cognito::UserPoolDomain
