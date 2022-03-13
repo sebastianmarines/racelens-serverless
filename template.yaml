@@ -179,3 +179,25 @@ Resources:
         - DomainName: !Sub "*.${DomainName}"
           HostedZoneId: !Ref HostedZoneId
       ValidationMethod: DNS
+
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UsernameConfiguration:
+        CaseSensitive: true
+      UserPoolName: !Sub "racelens-${Stage}"
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Mutable: true
+          Required: true
+          NumberAttributeConstraints:
+            MinValue: 1
+            MaxValue: 255
+        - Name: name
+          AttributeDataType: String
+          Mutable: true
+          Required: true
+          NumberAttributeConstraints:
+            MinValue: 1
+            MaxValue: 255
