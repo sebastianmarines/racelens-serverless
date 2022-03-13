@@ -2,6 +2,7 @@ import base64
 import json
 import os
 import urllib.parse
+from uuid import uuid4
 
 import boto3
 
@@ -11,6 +12,7 @@ COLLECTION_NAME = os.environ['COLLECTION_NAME']
 
 s3 = boto3.client('s3')
 rekognition = boto3.client('rekognition')
+cognito = boto3.client('cognito-idp')
 
 
 def index_faces(event, _context):
@@ -75,4 +77,38 @@ def find_faces(event, _context):
     return {
         'statusCode': 200,
         'body': json.dumps(images)
+    }
+
+def generate_upload_url(event, _context):
+    SUPPORTED_EXTENSIONS = ["jpg", "jpeg", "png"]
+
+    event_name = event['pathParameters']['event_name']
+    file_type = event['queryStringParameters']['file_type']
+    access_token = event['queryStringParameters']['access_token']
+
+    if file_type not in SUPPORTED_EXTENSIONS:
+        return {
+            'statusCode': 400,
+            'body': json.dumps('Invalid file type')
+        }
+
+    try:
+        user = cognito.get_user(AccessToken=access_token)
+    except cognito.exceptions.NotAuthorizedException as e:
+        return {
+            'statusCode': 401,
+            'body': json.dumps('Not authorized')
+        }
+    
+    # TODO: Verify user
+    presigned_url = s3.generate_presigned_post(
+        Bucket=os.environ['BUCKET_NAME'],
+        Key=f"{event_name}/{uuid4()}.{file_type}",
+        ExpiresIn=3600
+    )
+    
+
+    return {
+        'statusCode': 200,
+        'body': json.dumps(presigned_url)
     }

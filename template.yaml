@@ -33,6 +33,7 @@ Globals:
       Variables:
         COLLECTION_NAME: !Ref RekognitionCollectionName
         DYNAMODB_TABLE_NAME: !Ref DynamoDBTableName
+        BUCKET_NAME: !Ref BucketName
 
 Resources:
   RestApiGateway:
@@ -79,6 +80,23 @@ Resources:
             RestApiId: !Ref RestApiGateway
             Path: /{event_name}/find
             Method: post
+
+  GenerateUploadURL:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.generate_upload_url
+      MemorySize: 128
+      Policies:
+        - AmazonS3FullAccess
+        - AmazonRekognitionFullAccess
+        - AmazonDynamoDBFullAccess
+      Events:
+        GenerateUploadURL:
+          Type: Api
+          Properties:
+            RestApiId: !Ref RestApiGateway
+            Path: /{event_name}/generate_upload_url
+            Method: get
 
   RekognitionCollection:
     Type: AWS::Rekognition::Collection
