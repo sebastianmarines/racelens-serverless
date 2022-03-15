@@ -84,12 +84,19 @@ def generate_upload_url(event, _context):
 
     event_name = event['pathParameters']['event_name']
     file_type = event['queryStringParameters']['file_type']
-    access_token = event['queryStringParameters']['access_token']
+    access_token = event['headers'].get('Authorization', None)
+
 
     if file_type not in SUPPORTED_EXTENSIONS:
         return {
             'statusCode': 400,
             'body': json.dumps('Invalid file type')
+        }
+
+    if not access_token:
+        return {
+            'statusCode': 401,
+            'body': json.dumps('Missing access token')
         }
 
     try:
@@ -100,7 +107,6 @@ def generate_upload_url(event, _context):
             'body': json.dumps('Not authorized')
         }
     
-    # TODO: Verify user
     presigned_url = s3.generate_presigned_post(
         Bucket=os.environ['BUCKET_NAME'],
         Key=f"{event_name}/{uuid4()}.{file_type}",
