@@ -1241,6 +1241,17 @@ dev = ["pytest", "pytest-timeout", "coverage", "tox", "sphinx", "pallets-sphinx-
 watchdog = ["watchdog"]
 
 [[package]]
+name = "when-changed"
+version = "0.3.0"
+description = "Make when-changed cross-platform"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+watchdog = "*"
+
+[[package]]
 name = "yapf"
 version = "0.32.0"
 description = "A formatter for Python code."
@@ -1251,7 +1262,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.9"
-content-hash = "6348ff65214134e986de1cca1b419aa5d4c685b108c2baa1cabadb1baf2eab7f"
+content-hash = "51631f265a97f1d5b0aa7d34da21eb20e585c43cc979b2661a056886617e23b4"
 
 [metadata.files]
 appnope = [
@@ -1766,6 +1777,9 @@ websocket-client = [
 werkzeug = [
     {file = "Werkzeug-1.0.1-py2.py3-none-any.whl", hash = "sha256:2de2a5db0baeae7b2d2664949077c2ac63fbd16d98da0ff71837f7d1dea3fd43"},
     {file = "Werkzeug-1.0.1.tar.gz", hash = "sha256:6c80b1e5ad3665290ea39320b91e1be1e0d5f60652b964a3070216de83d2e47c"},
+]
+when-changed = [
+    {file = "when-changed-0.3.0.tar.gz", hash = "sha256:1f0b90c5f725223aab77290b4ce5cd79672702a1f3fbe620bdef440c106418e2"},
 ]
 yapf = [
     {file = "yapf-0.32.0-py2.py3-none-any.whl", hash = "sha256:8fea849025584e486fd06d6ba2bed717f396080fd3cc236ba10cb97c4c51cf32"},
