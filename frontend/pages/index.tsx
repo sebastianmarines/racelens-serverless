@@ -7,6 +7,34 @@ import styles from "../styles/Home.module.css";
 import Amplify from "aws-amplify";
 import { Auth } from "aws-amplify";
 
+const FileUploader = () => {
+  const [file, setFile] = useState<File | null>(null);
+  const [url, setUrl] = useState<string | null>(null);
+  const [progress, setProgress] = useState<number | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleUpload = async () => {
+    const upload = await fetch("/api/upload", {
+      method: "POST",
+      body: file,
+    });
+    const data = await upload.json();
+    setUrl(data.url);
+  };
+
+  return (
+    <div>
+      <input type="file" onChange={handleChange} />
+      {/* <button onClick={handleUpload}>Upload</button> */}
+    </div>
+  );
+};
+
 const Home: NextPage = () => {
   const [state, setState] = useState({
     email: "",
@@ -25,7 +53,7 @@ const Home: NextPage = () => {
     try {
       const user = await Auth.signIn(state.email, state.password);
       console.log(user);
-      console.log(user.signInUserSession.idToken.jwtToken);
+      console.log(user.signInUserSession.accessToken.jwtToken);
       setName(user.attributes.name);
     } catch (error) {
       console.log(error);
@@ -73,6 +101,7 @@ const Home: NextPage = () => {
             <button type="submit">Submit</button>
           </form>
         )}
+        <FileUploader />
       </main>
       <footer className={styles.footer}>
         <a
