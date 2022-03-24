@@ -4,8 +4,17 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 
-import Amplify from "aws-amplify";
+import { Amplify } from "aws-amplify";
 import { Auth } from "aws-amplify";
+
+Amplify.configure({
+  // TODO: Variable configuration
+  Auth: {
+    userPoolId: "us-east-1_ZIWUjWNqs", //UserPool ID
+    region: "us-east-1",
+    userPoolWebClientId: "6js8lq5ro8bkl64u4sgarsaedb", //WebClientId
+  },
+});
 
 const FileUploader = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -60,14 +69,6 @@ const Home: NextPage = () => {
     }
   };
 
-  Amplify.configure({
-    // TODO: Variable configuration
-    Auth: {
-      userPoolId: "us-east-1_ZIWUjWNqs", //UserPool ID
-      region: "us-east-1",
-      userPoolWebClientId: "6js8lq5ro8bkl64u4sgarsaedb", //WebClientId
-    },
-  });
   return (
     <div className={styles.container}>
       <Head>
