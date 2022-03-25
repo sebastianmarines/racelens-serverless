@@ -1,4 +1,6 @@
 {
     "cfnLint.path": "poetry run cfn-lint",
-    "python.formatting.provider": "yapf"
+    "python.formatting.provider": "yapf",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
 }
