@@ -9,11 +9,10 @@ import { Amplify } from "aws-amplify";
 import { signIn } from "../lib/auth";
 
 Amplify.configure({
-  // TODO: Variable configuration
   Auth: {
-    userPoolId: "us-east-1_ZIWUjWNqs", //UserPool ID
-    region: "us-east-1",
-    userPoolWebClientId: "6js8lq5ro8bkl64u4sgarsaedb", //WebClientId
+    userPoolId: process.env.NEXT_PUBLIC_USER_POOL_ID,
+    region: process.env.NEXT_PUBLIC_AWS_REGION,
+    userPoolWebClientId: process.env.NEXT_PUBLIC_USER_POOL_CLIENT_ID,
   },
 });
 

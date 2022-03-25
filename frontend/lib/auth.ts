@@ -32,7 +32,6 @@ export async function signIn(username: string, password: string) {
     try {
         const cognitoUser = await Auth.signIn(username, password);
         console.info("signIn: cognitoUser", cognitoUser);
-        debugger;
         authStore.getState().setToken(cognitoUser.signInUserSession.accessToken.jwtToken);
         authStore.getState().setUser({ name: cognitoUser.attributes.name, email: cognitoUser.attributes.email });
         authStore.getState().setError(null);
