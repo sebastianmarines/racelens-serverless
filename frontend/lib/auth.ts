@@ -31,10 +31,12 @@ const useAuth = () => {
 export async function signIn(username: string, password: string) {
     try {
         const cognitoUser = await Auth.signIn(username, password);
-        authStore().setToken(cognitoUser.signInUserSession.accessToken.jwtToken);
-        authStore().setUser({ name: cognitoUser.attributes.name, email: cognitoUser.attributes.email });
-        authStore().setError(null);
-        authStore().setIsAuthenticated(true);
+        console.info("signIn: cognitoUser", cognitoUser);
+        debugger;
+        authStore.getState().setToken(cognitoUser.signInUserSession.accessToken.jwtToken);
+        authStore.getState().setUser({ name: cognitoUser.attributes.name, email: cognitoUser.attributes.email });
+        authStore.getState().setError(null);
+        authStore.getState().setIsAuthenticated(true);
     } catch (error) {
         console.log(error);
         return false;
