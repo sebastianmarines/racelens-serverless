@@ -3,9 +3,10 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
+import { authStore } from "../lib/authStore";
 
 import { Amplify } from "aws-amplify";
-import { Auth } from "aws-amplify";
+import { signIn } from "../lib/auth";
 
 Amplify.configure({
   // TODO: Variable configuration
@@ -16,41 +17,14 @@ Amplify.configure({
   },
 });
 
-const FileUploader = () => {
-  const [file, setFile] = useState<File | null>(null);
-  const [url, setUrl] = useState<string | null>(null);
-  const [progress, setProgress] = useState<number | null>(null);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
-    }
-  };
-
-  const handleUpload = async () => {
-    const upload = await fetch("/api/upload", {
-      method: "POST",
-      body: file,
-    });
-    const data = await upload.json();
-    setUrl(data.url);
-  };
-
-  return (
-    <div>
-      <input type="file" onChange={handleChange} />
-      {/* <button onClick={handleUpload}>Upload</button> */}
-    </div>
-  );
-};
-
 const Home: NextPage = () => {
   const [state, setState] = useState({
     email: "",
     password: "",
   });
 
-  const [name, setName] = useState("");
+  const userName = authStore((state) => state.user.name);
+  const token = authStore((state) => state.token);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -59,14 +33,7 @@ const Home: NextPage = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      const user = await Auth.signIn(state.email, state.password);
-      console.log(user);
-      console.log(user.signInUserSession.accessToken.jwtToken);
-      setName(user.attributes.name);
-    } catch (error) {
-      console.log(error);
-    }
+    await signIn(state.email, state.password);
   };
 
   return (
@@ -80,8 +47,8 @@ const Home: NextPage = () => {
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
-        <h2>Hello {name}</h2>
-        {name ? (
+        <h2>Hello {userName}</h2>
+        {userName ? (
           <div></div>
         ) : (
           <form onSubmit={handleSubmit}>
@@ -102,7 +69,6 @@ const Home: NextPage = () => {
             <button type="submit">Submit</button>
           </form>
         )}
-        <FileUploader />
       </main>
       <footer className={styles.footer}>
         <a
