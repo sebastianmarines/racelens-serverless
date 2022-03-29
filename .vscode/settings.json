@@ -1,6 +1,11 @@
 {
-    "cfnLint.path": "poetry run cfn-lint",
-    "python.formatting.provider": "yapf",
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  "cfnLint.path": "poetry run cfn-lint",
+  "python.formatting.provider": "yapf",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "eslint.format.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": ["javascript"]
 }
