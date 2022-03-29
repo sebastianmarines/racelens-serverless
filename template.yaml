@@ -35,7 +35,8 @@ Globals:
     Environment:
       Variables:
         COLLECTION_NAME: !Ref RekognitionCollectionName
-        DYNAMODB_TABLE_NAME: !Ref ImagesDynamoDBTableName
+        IMAGES_DYNAMODB_TABLE_NAME: !Ref ImagesDynamoDBTableName
+        EVENTS_DYNAMODB_TABLE_NAME: !Ref EventsDynamoDBTableName
         BUCKET_NAME: !Ref BucketName
 
 Resources:
