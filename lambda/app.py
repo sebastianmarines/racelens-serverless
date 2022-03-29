@@ -53,7 +53,7 @@ def index_faces(event, _context):
         raise e
               
 def find_faces(event, _context):
-    event_name = event['pathParameters']['event_name']
+    event_id = event['pathParameters']['event_name']
 
     try:
         rk_result = rekognition.search_faces_by_image(
@@ -76,7 +76,7 @@ def find_faces(event, _context):
             'body': json.dumps('No matches found')
         }
     
-    images = [image.sk for image_id in matches for image in Image.query(f"imageId#{image_id}", Image.sk.startswith(f"{event_name}/"))]
+    images = [ImageModel.get(event_id, image_id).s3_object for image_id in matches]
 
     print(rk_result)
     return {
