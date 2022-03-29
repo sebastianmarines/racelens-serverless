@@ -6,7 +6,7 @@ from uuid import uuid4
 
 import boto3
 
-from models import Event
+from models import ImageModel
 
 COLLECTION_NAME = os.environ['COLLECTION_NAME']
 
@@ -17,21 +17,26 @@ cognito = boto3.client('cognito-idp')
 
 def index_faces(event, _context):
     bucket = event['Records'][0]['s3']['bucket']['name']
-    key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
+    s3_image_key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
+
+    event_id, _ = s3_image_key.split('/', 1)
+
     try:
         result = rekognition.index_faces(
             CollectionId=COLLECTION_NAME,
             Image={
                 "S3Object": {
                     "Bucket": bucket,
-                    "Name": key
+                    "Name": s3_image_key
                 }
             },
         )
         if result['FaceRecords']:
-            image = Event(
-                f"imageId#{result['FaceRecords'][0]['Face']['ImageId']}",
-                key
+            image_id = result['FaceRecords'][0]['Face']['ImageId']
+            image = ImageModel(
+                event_id=event_id,
+                image_id=image_id,
+                s3_object=s3_image_key
             )
             image.save()
             return {
@@ -44,7 +49,7 @@ def index_faces(event, _context):
         }
     except Exception as e:
         print(e)
-        print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
+        print(f"Error getting object {s3_image_key} from bucket {bucket}. Make sure they exist and your bucket is in the same region as this function.")
         raise e
               
 def find_faces(event, _context):
@@ -71,7 +76,7 @@ def find_faces(event, _context):
             'body': json.dumps('No matches found')
         }
     
-    images = [image.sk for image_id in matches for image in Event.query(f"imageId#{image_id}", Event.sk.startswith(f"{event_name}/"))]
+    images = [image.sk for image_id in matches for image in Image.query(f"imageId#{image_id}", Image.sk.startswith(f"{event_name}/"))]
 
     print(rk_result)
     return {
