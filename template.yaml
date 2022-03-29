@@ -15,7 +15,10 @@ Parameters:
     Default: racelens-images-dev
   ImagesDynamoDBTableName:
     Type: String
-    Default: racelens_dev
+    Default: images_racelens_dev
+  EventsDynamoDBTableName:
+    Type: String
+    Default: events_racelens_dev
   DomainName:
     Type: String
     Default: racelens.ml
@@ -185,6 +188,23 @@ Resources:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
       TableName: !Ref ImagesDynamoDBTableName
+  EventsDynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: event_id
+          AttributeType: S
+        - AttributeName: event_date
+          AttributeType: S
+      KeySchema:
+        - AttributeName: event_id
+          KeyType: HASH
+        - AttributeName: event_date
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      TableName: !Ref EventsDynamoDBTableName
 
   DomainCertificate:
     Type: AWS::CertificateManager::Certificate
