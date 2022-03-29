@@ -15,3 +15,12 @@ class ImageModel(Model):
     image_id = UnicodeAttribute(range_key=True)
 
     s3_object = UnicodeAttribute()
+
+
+class EventModel(Model):
+    class Meta:
+        table_name = EVENTS_DYNAMODB_TABLE_NAME
+
+    # TODO: Use event_id as range key and event_date as hash key 
+    event_id = UnicodeAttribute(hash_key=True)
+    event_date = UTCDateTimeAttribute(range_key=True)
