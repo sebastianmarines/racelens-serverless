@@ -13,7 +13,7 @@ Parameters:
   BucketName:
     Type: String
     Default: racelens-images-dev
-  DynamoDBTableName:
+  ImagesDynamoDBTableName:
     Type: String
     Default: racelens_dev
   DomainName:
@@ -32,7 +32,7 @@ Globals:
     Environment:
       Variables:
         COLLECTION_NAME: !Ref RekognitionCollectionName
-        DYNAMODB_TABLE_NAME: !Ref DynamoDBTableName
+        DYNAMODB_TABLE_NAME: !Ref ImagesDynamoDBTableName
         BUCKET_NAME: !Ref BucketName
 
 Resources:
@@ -168,26 +168,23 @@ Resources:
             DNSName: !GetAtt ImagesDistribution.DomainName
             HostedZoneId: !Sub "Z2FDTNDATAQYW2"
 
-  DynamoDBTable:
+  ImagesDynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
-        - AttributeName: pk
+        - AttributeName: event_id
           AttributeType: S
-        - AttributeName: sk
+        - AttributeName: image_id
           AttributeType: S
       KeySchema:
-        - AttributeName: pk
+        - AttributeName: event_id
           KeyType: HASH
-        - AttributeName: sk
+        - AttributeName: image_id
           KeyType: RANGE
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
-      TableName: !Ref DynamoDBTableName
-      Tags:
-        - Key: key
-          Value: value
+      TableName: !Ref ImagesDynamoDBTableName
 
   DomainCertificate:
     Type: AWS::CertificateManager::Certificate
